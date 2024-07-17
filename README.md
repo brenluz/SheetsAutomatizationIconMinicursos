@@ -1,0 +1,1 @@
+For this project to work you have to share acess to the email on credentials.json to the spreadsheet
