@@ -1,7 +1,7 @@
 import gspread
 
 def updateMember(sheet: gspread.worksheet , member, data):
-    col = 1
+    col = 2
     while(sheet.cell(1, col).value != None):
         col += 1
     sheet.update_cell(1, col, member)

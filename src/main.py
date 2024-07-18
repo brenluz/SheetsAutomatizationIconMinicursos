@@ -1,3 +1,6 @@
+import os
+from dotenv import load_dotenv
+
 from auth import getSheet
 from members import getMembers
 from choose import cursosDisponiveis, choose
@@ -5,17 +8,23 @@ from horarios import getHorarios
 from formatting import Formatsheet
 from update import createMember
 
+load_dotenv()
+
 # Abre a planilha com os cursos, pega todas as opcoes e as demonstra ao usuario
-planilhaCursos = getSheet('Cursos').sheet1 
+cursosUrl = os.getenv('CURSOS')
+planilhaCursos = getSheet(cursosUrl).sheet1 
+
 opcoes = cursosDisponiveis(planilhaCursos)
 cursoEscolhido = choose(opcoes)
 
 # Pega os participantes do curso escolhido e os horarios disponiveis
 participantes = getMembers(cursoEscolhido, planilhaCursos) 
-planilhaHorarios = getSheet('Horarios').sheet1
+horariosUrl = os.getenv('HORARIOS')
+planilhaHorarios = getSheet(horariosUrl).sheet1
 horarios = getHorarios(planilhaHorarios, participantes)
 
-planilhaFinal = getSheet('Planejamento')
+planilhaFinalUrl = os.getenv('PLANILHAFINAL')
+planilhaFinal = getSheet(planilhaFinalUrl)
 ws_titles = [ws.title for ws in planilhaFinal.worksheets()] # Pega todas as planilhas do planejamento dos cursos
 
  # Pega todas as planilhas do planejamento

@@ -28,7 +28,7 @@ def getSheet(planilha):
     jsonFilePath = 'credentials.json'
     # jsonFilePath = os.path.join(basePath, 'credentials.json')
     googleService = authenticate(jsonFilePath)
-    sheet = googleService.open(planilha)
+    sheet = googleService.open_by_url(planilha)
     return sheet
 
    
