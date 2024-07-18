@@ -2,10 +2,9 @@ import os
 from dotenv import load_dotenv
 
 from auth import getSheet
-from members import getMembers
-from choose import cursosDisponiveis, choose
+from choose import getMembers,cursosDisponiveis, choose
 from horarios import getHorarios
-from formatting import Formatsheet
+from formatting import Formatsheet, isEmpty
 from update import createMember
 
 load_dotenv()
@@ -34,8 +33,12 @@ if cursoEscolhido not in ws_titles: # Verifica se o curso escolhido ja está na 
 planilhaFinal = planilhaFinal.worksheet(cursoEscolhido)
 Formatsheet(planilhaHorarios, planilhaFinal) # Formata a planilha de horarios para a planilha final
 
+
 print('Escrevendo horarios dos inscritos na planilha')
 for i in range(len(participantes)):
-    planilhaFinal.update_cell(1, i+2, participantes[i]) # Adiciona os participantes na planilha final   
-    createMember(planilhaFinal, participantes[i], horarios[i])
+    if isEmpty(planilhaFinal.col_values(i+3)): # Verifica se a planilha final está vazia
+        planilhaFinal.update_cell(1, i+3, participantes[i]) # Adiciona os participantes na planilha final   
+        createMember(planilhaFinal, participantes[i], horarios[i])
+    else:
+        print('Participante já existe pulando')
 print('Programa finalizado')

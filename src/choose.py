@@ -1,4 +1,5 @@
 import gspread
+import re
 
 def lookFor(curso,sheet):
     cell = sheet.find(curso)
@@ -26,3 +27,18 @@ def choose(options):
         print(f'{i+1} - {options[i]}')
     choice = int(input('Digite o número correspondente ao curso escolhido: '))
     return options[choice-1]
+
+def getMembers(cursoEscolhido,sheet):
+    try:
+        print('Buscando inscritos no curso')
+        regex = re.compile(cursoEscolhido)
+        cells = sheet.findall(regex)
+        participantes = []  
+        for cell in cells:
+            if(cell != None):
+                participantes.append(sheet.cell(cell.row, cell.col-1).value)
+        print('Inscritos encontrados')
+        return participantes   
+    except:
+        print('Erro ao buscar participantes')
+        return None
