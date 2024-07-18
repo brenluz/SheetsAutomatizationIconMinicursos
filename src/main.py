@@ -1,18 +1,32 @@
 from auth import getSheet
+from members import getMembers
+from choose import cursosDisponiveis, choose
+from horarios import getHorarios
+from formatting import Formatsheet
+from update import createMember
 
-def write(sheet, row, col, data): # Função para escrever na planilha recebe a planilha, linha e coluna, e o dado a ser escrito
-    sheet.update_cell(row, col, data)
+# Abre a planilha com os cursos, pega todas as opcoes e as demonstra ao usuario
+planilhaCursos = getSheet('Cursos').sheet1 
+opcoes = cursosDisponiveis(planilhaCursos)
+cursoEscolhido = choose(opcoes)
 
-cursoEscolhido = input('Digite para qual curso gostaria de ver a disponibilidade de horários:')
+# Pega os participantes do curso escolhido e os horarios disponiveis
+participantes = getMembers(cursoEscolhido, planilhaCursos) 
+planilhaHorarios = getSheet('Horarios').sheet1
+horarios = getHorarios(planilhaHorarios, participantes)
 
-cursos = getSheet('Cursos').sheet1
-
-print(cursos.get_all_values())
-horarios = getSheet('Horarios')
-plan = getSheet('Planejamento')
-
-ws_titles = [ws.title for ws in plan.worksheets()] # Pega todas as planilhas do planejamento dos cursos
+planilhaFinal = getSheet('Planejamento')
+ws_titles = [ws.title for ws in planilhaFinal.worksheets()] # Pega todas as planilhas do planejamento dos cursos
 
  # Pega todas as planilhas do planejamento
+print('Abrindo planilha para escrever os dados')
 if cursoEscolhido not in ws_titles: # Verifica se o curso escolhido ja está na planilha de planejamento
-    plan.add_worksheet(title= cursoEscolhido, rows= 100, cols= 20) # Adiciona uma nova planilha para o curso escolhido
+    planilhaFinal.add_worksheet(title= cursoEscolhido, rows= 100, cols= 30)# Adiciona uma nova planilha para o curso escolhido
+planilhaFinal = planilhaFinal.worksheet(cursoEscolhido)
+Formatsheet(planilhaHorarios, planilhaFinal) # Formata a planilha de horarios para a planilha final
+
+print('Escrevendo horarios dos inscritos na planilha')
+for i in range(len(participantes)):
+    planilhaFinal.update_cell(1, i+2, participantes[i]) # Adiciona os participantes na planilha final   
+    createMember(planilhaFinal, participantes[i], horarios[i])
+print('Programa finalizado')
