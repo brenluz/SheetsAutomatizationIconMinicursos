@@ -30,15 +30,18 @@ ws_titles = [ws.title for ws in planilhaFinal.worksheets()] # Pega todas as plan
 print('Abrindo planilha para escrever os dados')
 if cursoEscolhido not in ws_titles: # Verifica se o curso escolhido ja está na planilha de planejamento
     planilhaFinal.add_worksheet(title= cursoEscolhido, rows= 100, cols= 30)# Adiciona uma nova planilha para o curso escolhido
+elif cursoEscolhido in ws_titles:
+    entrada = input('Este Curso ja existe, tem certeza que deseja continuar? [y/n]')
+    entrada.lower()
+    if(entrada == 'n'):
+        print('Programa finalizado')
+        exit()
 planilhaFinal = planilhaFinal.worksheet(cursoEscolhido)
 Formatsheet(planilhaHorarios, planilhaFinal) # Formata a planilha de horarios para a planilha final
 
-
 print('Escrevendo horarios dos inscritos na planilha')
 for i in range(len(participantes)):
-    if isEmpty(planilhaFinal.col_values(i+3)): # Verifica se a planilha final está vazia
-        planilhaFinal.update_cell(1, i+3, participantes[i]) # Adiciona os participantes na planilha final   
-        createMember(planilhaFinal, participantes[i], horarios[i])
-    else:
-        print('Participante já existe pulando')
-print('Programa finalizado')
+    planilhaFinal.update_cell(1, i+3, participantes[i]) # Adiciona os participantes na planilha final   
+    createMember(planilhaFinal, participantes[i], horarios[i])
+
+print('Programa finalizado com sucesso')
