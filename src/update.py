@@ -2,6 +2,26 @@ import gspread
 import time
 import random
 
+#Updates the sheet with the initial values from the first sheet
+def addInitialValues(sheet1, sheet2): 
+    coluna1 = sheet1.col_values(1)
+    coluna2 = sheet1.col_values(2)
+    if isEmpty(sheet2.col_values(1)):
+        writeToCol(sheet2, 1, coluna1)
+    if isEmpty(sheet2.col_values(2)):
+        writeToCol(sheet2, 2, coluna2)
+
+def isEmpty(array):
+    string = array
+    i = 0
+    while len(string) != 0 and string[0] == '': 
+        string.pop(0)
+        i += 1
+    if len(string) == 0:
+        return True
+    else:
+        return False
+
 def update_sheet_with_exponential_backoff(sheet: gspread.worksheet , request):
     for n in range(0, 5):  # Retry up to 5 times
         try:
@@ -43,7 +63,7 @@ def col_num_to_letter(col_num):
         letter = chr(65 + remainder) + letter
     return letter 
 
-def updateBatch(worksheet, col_num, data_list):
+def updateBatch(sheet: gspread.worksheet, col_num: int, data_list):
     # Convert column number to letter
     col_letter = col_num_to_letter(col_num)
     # Prepare the range string for the specified column
@@ -58,4 +78,4 @@ def updateBatch(worksheet, col_num, data_list):
         }
     ]
     # Use the worksheet's batch_update method
-    worksheet.batch_update(value_ranges, value_input_option='RAW')
+    sheet.batch_update(value_ranges, value_input_option='RAW')
