@@ -39,6 +39,7 @@ def main():
         if(entrada == 'n'):
             print('Programa finalizado')
             exit()
+    
     planilhaFinal = planilhaFinal.worksheet(cursoEscolhido)
     addInitialValues(planilhaHorarios, planilhaFinal) # Formata a planilha de horarios para a planilha final
     print('Escrevendo horarios dos inscritos na planilha')
@@ -48,8 +49,6 @@ def main():
 
     print("adicionando formatacao correta na planilha")
     for i in range(len(participantes)):
-        print('tamanho:')
-        print(len(horarios[i]))
         planilhaFinal.update_cell(1, i+3, participantes[i])
         formatSheet(planilhaFinal, planilhaFinal.find(participantes[i]), horarios[i])
         planilhaFinal.update_cell(1, i+3, "")
@@ -60,6 +59,5 @@ def main():
         main()
     else:
         exit()
-
 
 main()
