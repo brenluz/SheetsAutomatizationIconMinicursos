@@ -3,6 +3,8 @@ import re
 
 global gui
 
+chooseMessages = []
+
 
 def lookFor(curso, sheet):
     cell = sheet.find(curso)
@@ -27,7 +29,6 @@ def cursosDisponiveis(sheet: gspread.worksheet):
 
 
 def choose(options):
-    gui.display('Escolha um dos minicursos disponiveis')
     for i in range(len(options)):
         print(f'{i + 1} - {options[i]}')
     choice = int(input('Digite o número correspondente ao curso escolhido: '))
@@ -36,15 +37,15 @@ def choose(options):
 
 def getMembers(cursoEscolhido, sheet):
     try:
-        print('Buscando inscritos no curso')
+        chooseMessages.append('Buscando inscritos no curso')
         regex = re.compile(cursoEscolhido)
         cells = sheet.findall(regex)
         participantes = []
         for cell in cells:
             if cell is not None:
                 participantes.append(sheet.cell(cell.row, cell.col - 1).value)
-        print('Inscritos encontrados')
-        return participantes
+        chooseMessages.append('Inscritos encontrados')
+        return participantes, chooseMessages
     except:
-        print('Erro ao buscar participantes')
-        return None
+        chooseMessages.append('Erro ao buscar inscritos')
+        return None, chooseMessages

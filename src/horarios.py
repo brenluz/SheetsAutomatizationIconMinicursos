@@ -1,6 +1,8 @@
 import gspread
 import unicodedata
 
+horariosMessages = []
+
 
 def normalize_string(s):
     """Normalize string by removing accents"""
@@ -11,7 +13,7 @@ def getHorarios(sheet: gspread.worksheet, participantes):
     array = []
     # Assuming you're interested in a specific column, e.g., the first column
     # Fetch all values in that column
-    print('Buscando horarios dos inscritos')
+    horariosMessages.append('Buscando horarios dos inscritos')
     try:
         all_values = sheet.row_values(4)  # Adjust the column index as needed
         normalized_values = [normalize_string(value) for value in all_values]
@@ -29,9 +31,9 @@ def getHorarios(sheet: gspread.worksheet, participantes):
                     array.append(sheet.col_values(index + 1))  # Adjusting for 0-based index
                     break  # Assuming you only need the first match for each participante
             if not found:
-                print('Participante não encontrado')
-        print('Horarios encontrados')
-        return array
+                horariosMessages.append(f'Horario do inscrito {participante} não encontrado')
+        horariosMessages.append('Horarios encontrados')
+        return array, horariosMessages
     except:
-        print('Erro ao buscar horarios')
-        return None
+        horariosMessages.append('Erro ao buscar horarios')
+        return None, horariosMessages

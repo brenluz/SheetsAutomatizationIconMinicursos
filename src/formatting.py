@@ -27,7 +27,7 @@ def createRule(initialCell, finalCell, sheet: gspread.worksheet, condition):
 def formatSheet(sheet: gspread.worksheet, cell, data):
     try:
         initialcell = [cell.row + 4, cell.col]
-        finalcell = [cell.row + len(data) + 4, cell.col]
+        finalcell = [cell.row + len(data), cell.col]
         initialcell = to_a1(initialcell[0], initialcell[1])
         finalcell = to_a1(finalcell[0], finalcell[1])
         current_fmt = gf.get_effective_format(sheet, initialcell)

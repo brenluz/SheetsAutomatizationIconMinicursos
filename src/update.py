@@ -1,16 +1,12 @@
-import gspread
+
 import time
 import random
+import gspread
 
 
 # Updates the sheet with the initial values from the first sheet
-def addInitialValues(sheet1, sheet2):
-    coluna1 = sheet1.col_values(1)
-    coluna2 = sheet1.col_values(2)
-    if isEmpty(sheet2.col_values(1)):
-        writeToCol(sheet2, 1, coluna1)
-    if isEmpty(sheet2.col_values(2)):
-        writeToCol(sheet2, 2, coluna2)
+def addInitialValues(url, title, sheet2: gspread.worksheet):
+    sheet2.update_acell("A4", f"=IMPORTRANGE(\"{url}\"; \"{title}!A4:B57\")")
 
 
 def isEmpty(array):
@@ -48,7 +44,10 @@ def createMember(sheet: gspread.worksheet, member, data):
         try:
             memberCell = sheet.find(member)
             coluna = memberCell.col
-            # coluna = updateMember(sheet, member, data)
+            if len(data) > 56:
+                data = data[:56]
+            elif len(data) < 56:
+                data += [''] * (56 - len(data))
             updateBatch(sheet, coluna, data)
             break  # Exit the loop if the request is successful
         except gspread.exceptions.APIError as e:
