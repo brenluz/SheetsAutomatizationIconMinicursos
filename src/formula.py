@@ -2,7 +2,6 @@ from update import updateBatch
 from formatting import formatSheet
 import gspread
 
-
 def remove_percentage(values):
     result = []
     for value in values:

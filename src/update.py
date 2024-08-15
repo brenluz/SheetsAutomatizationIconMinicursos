@@ -3,7 +3,6 @@ import time
 import random
 import gspread
 
-
 # Updates the sheet with the initial values from the first sheet
 def addInitialValues(url, title, sheet2: gspread.worksheet):
     sheet2.update_acell("A4", f"=IMPORTRANGE(\"{url}\"; \"{title}!A4:B57\")")
