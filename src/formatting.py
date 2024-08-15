@@ -13,37 +13,39 @@ def to_a1(row, col):
     return f"{col_letter}{row}"
 
 
-def createRule(initialCell, finalCell, sheet: gspread.worksheet, condition):
+def createRule(initialCell, finalCell, sheet: gspread.worksheet, condition, type_of, color=None):
     rule = gf.ConditionalFormatRule(
         ranges=[gf.GridRange.from_a1_range(initialCell + ':' + finalCell, sheet)],
         booleanRule=gf.BooleanRule(
-            condition=gf.BooleanCondition('TEXT_EQ', condition),
-            format=gf.CellFormat(backgroundColor=gf.Color(147 / 255, 196 / 255, 125 / 255))
+            condition=gf.BooleanCondition(type_of, condition),
+            format=gf.CellFormat(backgroundColor=gf.Color(color[0], color[1], color[2]))
         )
     )
     return rule
 
-
-def formatSheet(sheet: gspread.worksheet, cell, data):
-    try:
-        initialcell = [cell.row + 4, cell.col]
+def eraseFormat():
+    pass
+def formatSheet(sheet: gspread.worksheet, cell, data, condition, type_of, row_offset=0, color1=None, color2=None):
+    # try:
+        initialcell = [cell.row + row_offset, cell.col]
         finalcell = [cell.row + len(data), cell.col]
         initialcell = to_a1(initialcell[0], initialcell[1])
         finalcell = to_a1(finalcell[0], finalcell[1])
         current_fmt = gf.get_effective_format(sheet, initialcell)
+
         if current_fmt.backgroundColor == gf.Color(1, 1, 1):
             bold_border = gf.Border(style='SOLID_MEDIUM', color=gf.Color(0, 0, 0))  # Black, medium (bold) border
             # Apply the bold border to all sides of the cell
             borders = gf.Borders(top=bold_border, bottom=bold_border, left=bold_border, right=bold_border)
 
-            fmt = gf.cellFormat(backgroundColor=gf.Color(224 / 255, 102 / 255, 102 / 255), borders=borders)
+            fmt = gf.cellFormat(backgroundColor=gf.Color(color1[0], color1[1], color1[2]), borders=borders)
             gf.format_cell_range(sheet, initialcell + ':' + finalcell, fmt)
 
-            rule = createRule(initialcell, finalcell, sheet, [""])
+            rule = createRule(initialcell, finalcell, sheet, condition, type_of, color2)
             rules = gf.get_conditional_format_rules(sheet)
             rules.append(rule)
             rules.save()
-    except Exception as e:
-        print(e)
-        print('Error formatting cell')
-        exit()
+    # except Exception as e:
+    #     print(e)
+    #     print('Error formatting cell')
+    #     exit()

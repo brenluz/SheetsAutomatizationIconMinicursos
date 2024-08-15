@@ -84,4 +84,4 @@ def updateBatch(sheet: gspread.worksheet, col_num: int, data_list):
         }
     ]
     # Use the worksheet's batch_update method
-    sheet.batch_update(value_ranges, value_input_option='RAW')
+    sheet.batch_update(value_ranges, value_input_option='USER_ENTERED')

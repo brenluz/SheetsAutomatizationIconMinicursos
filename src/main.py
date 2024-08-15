@@ -14,18 +14,19 @@ load_dotenv()
 
 def main():
     # Abre a planilha com os cursos, pega todas as opcoes e as demonstra ao usuario
-    cursosUrl = os.getenv('CURSOS')
+    cursosUrl = input('Insira o url da planilha com os cursos: ')
     planilhaCursos = getSheet(cursosUrl)[0].sheet1
     opcoes = cursosDisponiveis(planilhaCursos)
     cursoEscolhido = choose(opcoes)
 
     # Pega os participantes do curso escolhido e os horarios disponiveis
-    participantes = getMembers(cursoEscolhido, planilhaCursos)[0]
-    horariosUrl = os.getenv('HORARIOS')
+    # participantes = getMembers(cursoEscolhido, planilhaCursos)[0]
+    participantes = ["Breno", "Eduardo", "Ricardo", "Vitor"]
+    horariosUrl = input('Insira o url da planilha com os horarios: ')
     planilhaHorarios = getSheet(horariosUrl)[0].sheet1
     horarios = getHorarios(planilhaHorarios, participantes)[0]
 
-    planilhaFinalUrl = os.getenv('PLANILHAFINAL')
+    planilhaFinalUrl = input('Insira o url da planilha onde deseja escrever estes dados: ')
     planilhaFinal = getSheet(planilhaFinalUrl)[0]
     ws_titles = [ws.title for ws in planilhaFinal.worksheets()]  # Pega todas as planilhas do planejamento dos cursos
 
@@ -35,7 +36,7 @@ def main():
         planilhaFinal.add_worksheet(title=cursoEscolhido, rows=100, cols=30)  # Adiciona uma nova planilha para o
         # curso escolhido
     elif cursoEscolhido in ws_titles:
-        entrada = input('Este Curso ja possui uma planilha, tem certeza que deseja continuar? [y/n]')
+        entrada = input('Este Curso ja possui uma planilha com este nome, tem certeza que deseja continuar? [y/n]')
         entrada.lower()
         if entrada == 'n':
             print('Programa finalizado')
@@ -50,7 +51,17 @@ def main():
     print("adicionando formatacao correta na planilha")
     for i in range(len(participantes)):
         planilhaFinal.update_cell(1, i+3, participantes[i])
-        formatSheet(planilhaFinal, planilhaFinal.find(participantes[i]), horarios[i])
+        aondeFormatar = planilhaFinal.find(participantes[i])
+        formatSheet(
+            planilhaFinal,
+            aondeFormatar,
+            horarios[i],
+            [" "],
+            "TEXT_EQ",
+            4,
+            [224 / 255, 102 / 255, 102 / 255],
+            [147 / 255, 196 / 255, 125 / 255]
+        )
         planilhaFinal.update_cell(1, i+3, "")
     colformula = len(participantes) + 4
     formula(planilhaFinal, colformula)

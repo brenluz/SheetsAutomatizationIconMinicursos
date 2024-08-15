@@ -38,8 +38,7 @@ class ConsoleApp:
         self.form = create_form()
         self.cursos = self.create_url_page(
             "Insira o url da planilha na qual o programa ira procurar os cursos",
-            self.insert_url(nextpage=self.create_options_page)
-
+            onclick=self.insert_url(nextpage=self.create_options_page)
         )
         self.current = self.cursos
         self.sheet: gspread.Spreadsheet or None = None
@@ -141,6 +140,12 @@ class ConsoleApp:
 
     def create_table(self):
         values = self.sheet.sheet1.get_all_values()
+        self.sheet.add_worksheet(title=self.selectedOption, rows=100, cols=30)
+        ft.DataTable(
+            columns=values[0],
+            rows=values[1:]
+        )
+
     def change_page(self, page):
         self.current = page
         self.page.clean()
